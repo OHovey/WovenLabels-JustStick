@@ -26,7 +26,6 @@ var fillColorObjectMap = {
 
 var count = 0
 for (var i = 0; i <= pages.length; i++) {
-    $.writeln('i: ' + i)
     
     try {
         var match = Doc.links.item(i - count).name.match(/-(\w)./)[0] 
@@ -35,13 +34,11 @@ for (var i = 0; i <= pages.length; i++) {
 
         if (fillColorObjectMap[match] != undefined) {
             var myColorName = fillColorObjectMap[match]
-            $.writeln(i + ': ' + match + '===' + myColorName)
             pages.item(i + 1).select()
             var myColor = app.activeDocument.colors.item(myColorName) 
             pages.item(i + 1).textFrames.everyItem().paragraphs.everyItem().fillColor = myColor
 
             if (pages.item(i + 1).textFrames[1].overflows) {
-                $.writeln('at pointSize alterer')
                 try {
                     var fSize = 7
                     for (var s = 0; s < textFrameCount; s++) {
@@ -66,7 +63,6 @@ for (var i = 0; i <= pages.length; i++) {
                 var fSize = 7
                 for (var s = 0; s < textFrameCount; s++) {
                     if (pages.item(i + 1).textFrames[s].overflows) {
-                        $.writeln('at pointSize alterer')
                         try {
                             
                             var page = pages.item(i + 1)
