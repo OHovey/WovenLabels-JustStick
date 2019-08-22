@@ -125,4 +125,3 @@ for (var i = 0; i <= pages.length; i++) {
         }
     }
 }
-$.writeln(app.activeDocument.colors.everyItem().name)
