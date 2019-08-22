@@ -1,5 +1,5 @@
-// open the template file if you must!
-// app.open(File("/Users/Oliver/Documents/Motif Side Style/Single-Label4.indd"))
+// Github:
+// https://github.com/OHovey/WovenLabels-JustStick/blob/master/SingleStickerTemplateScript.jsx
 
 var Doc = app.documents.item(0); 
 var allGraphics = app.activeDocument.allGraphics
@@ -20,6 +20,7 @@ var fillColorObjectMap = {
     'G': 'CMYK Green',
     'MG': 'Magenta',
     'MB': 'Cyan',
+    'PU': app.activeDocument.colors.item(3).name
 }
 
 
@@ -34,19 +35,58 @@ for (var i = 0; i <= pages.length; i++) {
 
         if (fillColorObjectMap[match] != undefined) {
             var myColorName = fillColorObjectMap[match]
-            // $.writeln(i + ': ' + match + '===' + myColorName)
+            $.writeln(i + ': ' + match + '===' + myColorName)
             pages.item(i + 1).select()
             var myColor = app.activeDocument.colors.item(myColorName) 
-            pages.item(i + 1).textFrames.everyItem().paragraphs.everyItem().fillColor = myColor         
-            
-            // if (pages.item(i + 1).textFrames.item(1).overflows) {
-            //     $.writeln(pages.item(i + 1).textFrames.everyItem().paragraphs.everyItem().characters.everyItem().pointSize)
-            //     try {
-            //         pages.item(i + 1).textFrames.everyItem().paragraphs.everyItem().characters.everyItem().pointSize = 4
-            //     } catch (err) {
-            //         $.writeln('err: ' + err)
-            //     }
-            // }
+            pages.item(i + 1).textFrames.everyItem().paragraphs.everyItem().fillColor = myColor
+
+            if (pages.item(i + 1).textFrames[1].overflows) {
+                $.writeln('at pointSize alterer')
+                try {
+                    var fSize = 7
+                    for (var s = 0; s < textFrameCount; s++) {
+                        var page = pages.item(i + 1)
+                        var origionalBounds = pages.item(i + 1).textFrames[s].geometricBounds
+                        page.textFrames[s].geometricBounds = page.bounds 
+                        page.textFrames.everyItem().paragraphs.everyItem().characters.everyItem().pointSize = fSize
+                        page.textFrames.everyItem().paragraphs.everyItem().fillColor = myColor  
+                        page.textFrames[s].geometricBounds = origionalBounds
+
+                        if (pages.item(i + 1).textFrames[s].overflows) {
+                            s = s - 1
+                            fSize = fSize - 1
+                        }
+                    }
+                } catch (err) {
+                    $.writeln('err: ' + err)
+                }
+            }
+        } else {
+            try {
+                var fSize = 7
+                for (var s = 0; s < textFrameCount; s++) {
+                    if (pages.item(i + 1).textFrames[s].overflows) {
+                        $.writeln('at pointSize alterer')
+                        try {
+                            
+                            var page = pages.item(i + 1)
+                            var origionalBounds = pages.item(i + 1).textFrames[s].geometricBounds
+                            page.textFrames[s].geometricBounds = page.bounds 
+                            page.textFrames.everyItem().paragraphs.everyItem().characters.everyItem().pointSize = fSize 
+                            page.textFrames[s].geometricBounds = origionalBounds
+                            
+                            if (pages.item(i + 1).textFrames[s].overflows) {
+                                s = s - 1
+                                fSize = fSize - 1
+                            }
+                        } catch (err) {
+                            $.writeln('err: ' + err)
+                        }
+                    }
+                }
+            } catch (err) {
+                $.writeln('err: ' + err)
+            }
         }
     } catch (err) {
         switch(typeof err) {
@@ -67,8 +107,10 @@ for (var i = 0; i <= pages.length; i++) {
                     var textFrameCount = page.textFrames.count() 
                     for (var s = 0; s < textFrameCount; s++) {
                         // CHANGE THIS TO TRANSFORM
+                        page.textFrames.everyItem().paragraphs.everyItem().characters.everyItem().pointSize = 9 
                         page.textFrames[s].geometricBounds = page.bounds 
                     }
+                    if (myColor != undefined) pages.item(i + 1).textFrames.everyItem().paragraphs.everyItem().fillColor = myColor    
                     count++
                 } catch (err) {
                     $.writeln('err: ' + err)
@@ -83,3 +125,4 @@ for (var i = 0; i <= pages.length; i++) {
         }
     }
 }
+$.writeln(app.activeDocument.colors.everyItem().name)
